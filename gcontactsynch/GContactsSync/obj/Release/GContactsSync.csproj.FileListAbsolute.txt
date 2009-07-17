@@ -1,0 +1,13 @@
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSync.exe
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSync.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\Google.GData.Client.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\Google.GData.Contacts.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\Google.GData.Extensions.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\ResolveAssemblyReference.cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.csproj.ResolveComReference.cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.Properties.Resources.resources
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.csproj.GenerateResource.Cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.exe
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSync.exe.config
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.MainForm.resources
