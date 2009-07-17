@@ -24,6 +24,7 @@ OutputBaseFilename=gcontactsync-setup
 Compression=lzma
 SolidCompression=true
 OutputDir=C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\Setup
+VersionInfoVersion=0.9.1.0
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
