@@ -55,14 +55,14 @@
     <Compile Include="ContactSync.cs" />
     <Compile Include="EmailComparer.cs" />
     <Compile Include="EncryptDecrypt.cs" />
-    <Compile Include="GoogleEnumerator.cs" />
+    <Compile Include="GoogleAdapter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OutlookEnumerator.cs" />
+    <Compile Include="OutlookAdapter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="MainForm.resx">

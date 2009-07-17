@@ -37,7 +37,9 @@ namespace GContactsSync
             if (frm.txtUser.Text == "")
                 frm.Show();
             else
-                frm.Invoke(new SimpleDelegate(frm.StartSync),null);
+            {
+                frm.Invoke(new SimpleDelegate(frm.StartSync), null);
+            }
             Application.Run();
         }
     }

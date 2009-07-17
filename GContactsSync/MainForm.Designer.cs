@@ -36,7 +36,7 @@
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.tmrSyncing = new System.Windows.Forms.Timer(this.components);
+            this.tmrSynching = new System.Windows.Forms.Timer(this.components);
             this.label1 = new System.Windows.Forms.Label();
             this.numInterval = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
@@ -57,6 +57,9 @@
             this.txtLog = new System.Windows.Forms.RichTextBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.imgSyncing = new System.Windows.Forms.ImageList(this.components);
+            this.tsAbort = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsSep = new System.Windows.Forms.ToolStripSeparator();
+            this.tsStart = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxNotificationIcon.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -89,11 +92,15 @@
             // ctxNotificationIcon
             // 
             this.ctxNotificationIcon.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsAbort,
+            this.tsStart,
+            this.tsSep,
             this.openToolStripMenuItem,
             this.toolStripMenuItem1,
             this.closeToolStripMenuItem});
             this.ctxNotificationIcon.Name = "contextMenuStrip1";
-            this.ctxNotificationIcon.Size = new System.Drawing.Size(181, 70);
+            this.ctxNotificationIcon.Size = new System.Drawing.Size(181, 142);
+            this.ctxNotificationIcon.DoubleClick += new System.EventHandler(this.ctxNotificationIcon_DoubleClick);
             this.ctxNotificationIcon.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // openToolStripMenuItem
@@ -117,10 +124,10 @@
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
-            // tmrSyncing
+            // tmrSynching
             // 
-            this.tmrSyncing.Interval = 500;
-            this.tmrSyncing.Tick += new System.EventHandler(this.timer1_Tick);
+            this.tmrSynching.Interval = 500;
+            this.tmrSynching.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // label1
             // 
@@ -332,6 +339,25 @@
             this.imgSyncing.Images.SetKeyName(2, "GCSAnim2.ico");
             this.imgSyncing.Images.SetKeyName(3, "GCSAnim3.ico");
             // 
+            // tsAbort
+            // 
+            this.tsAbort.Name = "tsAbort";
+            this.tsAbort.Size = new System.Drawing.Size(180, 22);
+            this.tsAbort.Text = "Abort Sync";
+            this.tsAbort.Click += new System.EventHandler(this.tsAbort_Click);
+            // 
+            // tsSep
+            // 
+            this.tsSep.Name = "tsSep";
+            this.tsSep.Size = new System.Drawing.Size(177, 6);
+            // 
+            // tsStart
+            // 
+            this.tsStart.Name = "tsStart";
+            this.tsStart.Size = new System.Drawing.Size(180, 22);
+            this.tsStart.Text = "Sync Now";
+            this.tsStart.Click += new System.EventHandler(this.tsStart_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.button1;
@@ -371,7 +397,7 @@
         private System.Windows.Forms.ContextMenuStrip ctxNotificationIcon;
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
-        private System.Windows.Forms.Timer tmrSyncing;
+        private System.Windows.Forms.Timer tmrSynching;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -393,6 +419,9 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ImageList imgSyncing;
+        private System.Windows.Forms.ToolStripMenuItem tsAbort;
+        private System.Windows.Forms.ToolStripSeparator tsSep;
+        private System.Windows.Forms.ToolStripMenuItem tsStart;
     }
 }
 

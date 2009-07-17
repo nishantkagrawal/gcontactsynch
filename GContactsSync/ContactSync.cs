@@ -14,22 +14,22 @@ namespace GContactsSync
         public delegate void OutlookSynchedHandler(object sender, ContactItem contact,  int current, int total);
         public delegate void GoogleSynchedHandler(object sender, Contact contact, int current, int total);
         public delegate void ErrorHandler(object sender, System.Exception ex);
-        public delegate void StartSyncingHandler(object sender);
+        public delegate void StartSynchingHandler(object sender);
         public event OutlookSynchedHandler OutlookSynched;
         public event GoogleSynchedHandler GoogleSynched;
         public event ErrorHandler Error;
-        public event StartSyncingHandler StartSyncing;
-        public event StartSyncingHandler EndSyncing;
+        public event StartSynchingHandler StartSynching;
+        public event StartSynchingHandler EndSynching;
 
         public enum Direction {dirToGoogle,dirToOutlook};
-        GoogleEnumerator gEnum;
-        OutlookEnumerator oEnum;
+        GoogleAdapter gEnum;
+        OutlookAdapter oEnum;
         int Interval;
 
         public ContactSync(string Username, string Password, int Interval)
         {
-            gEnum = new GoogleEnumerator(Username, Password);
-            oEnum = new OutlookEnumerator();
+            gEnum = new GoogleAdapter(Username, Password);
+            oEnum = new OutlookAdapter();
             this.Interval = Interval;
         }
 
@@ -49,7 +49,7 @@ namespace GContactsSync
             {
                 do
                 {
-                    if (StartSyncing != null) StartSyncing(this);
+                    if (StartSynching != null) StartSynching(this);
                     List<ContactItem> OutlookContacts;
                     List<Contact> GoogleContacts;
 
@@ -108,6 +108,8 @@ namespace GContactsSync
                         }
                         catch (System.Exception ex)
                         {
+                            if (ex is ThreadAbortException)
+                                break;
                         }
                     }
                     i = 0;
@@ -143,18 +145,24 @@ namespace GContactsSync
                                 if (GoogleSynched != null) GoogleSynched(this, item, i, GoogleContacts.Count());
                             }
                         }
-                        catch (System.Exception)
+                        catch (System.Exception ex)
                         {
+                            if (ex is ThreadAbortException)
+                                break;
                         }
 
                     }
-                    if (EndSyncing != null) EndSyncing(this);
+                    if (EndSynching != null) EndSynching(this);
                     Thread.Sleep(Interval);
                 } while (Thread.CurrentThread.ThreadState != ThreadState.AbortRequested);
             }
             catch (System.Exception ex)
             {
-                if (Error != null) Error(this, ex);
+                if ((EndSynching != null))
+                    EndSynching(this);
+                else if (!(ex is ThreadAbortException) & (Error != null))
+                    Error(this, ex);
+
             }
 
         }
