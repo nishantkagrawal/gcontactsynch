@@ -2,9 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Google Outlook Contact Sync"
-#define MyAppVerName "Google Outlook Contact Sync 1.0"
+#define MyAppVerName "Google Outlook Contact Sync 0.9.1.0"
 #define MyAppPublisher "Daniel Polistchuck"
-#define MyAppURL "http://www.example.com/"
+#define MyAppURL "http://code.google.com/p/gcontactsynch/"
 #define MyAppExeName "GContactsSync.exe"
 
 [Setup]
@@ -20,7 +20,7 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\GContactSync
 DefaultGroupName={#MyAppName}
-OutputBaseFilename=setup
+OutputBaseFilename=gcontactsync-setup
 Compression=lzma
 SolidCompression=true
 OutputDir=C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\Setup

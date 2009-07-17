@@ -55,36 +55,40 @@ namespace GContactsSync
             }
         }
 
-        public void SyncError (object sender, System.Exception ex)
+        public void SynchError (object sender, System.Exception ex)
         {
             ShowError(ex.Message); 
         }
 
-        private delegate void StartEndSyncingDelegate(object sender);
+        private delegate void StartEndSynchingDelegate(object sender);
 
-        public void StartSyncing(object sender)
+        public void StartSynching(object sender)
         {
             if (txtLog.InvokeRequired)
             {
-                txtLog.Invoke(new StartEndSyncingDelegate(StartSyncing), sender);
+                txtLog.Invoke(new StartEndSynchingDelegate(StartSynching), sender);
             }
             else
             {
                 txtLog.AppendText("---Starting to sync...\r\n");
                 ntfIcon.Text = "Starting to Synchronize";
                 //tmrSyncing.Interval = 100;
-                tmrSyncing.Enabled = true;
+                tmrSynching.Enabled = true;
             }
         }
-        private void EndSyncing(object sender)
+        private void EndSynching(object sender)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke(new StartEndSyncingDelegate(EndSyncing), sender);
+                this.Invoke(new StartEndSynchingDelegate(EndSynching), sender);
             }
             else
             {
-                tmrSyncing.Enabled = false;
+                if (synchThread.ThreadState == ThreadState.AbortRequested)
+                    AddLogText("--Synchronization Aborted");
+                else
+                    AddLogText("--Synchronization Finished");
+                tmrSynching.Enabled = false;
                 indAnim = 0;
                 ntfIcon.Icon = this.Icon;
                 ntfIcon.Text = "GContactsSync";
@@ -96,9 +100,9 @@ namespace GContactsSync
             ContactSync cs = new ContactSync(txtUser.Text, txtPassword.Text,Convert.ToInt32(numInterval.Value*60000));
             cs.GoogleSynched += GoogleSynched;
             cs.OutlookSynched += OutlookSynched;
-            cs.StartSyncing += StartSyncing;
-            cs.EndSyncing += EndSyncing;
-            cs.Error += SyncError;
+            cs.StartSynching += StartSynching;
+            cs.EndSynching += EndSynching;
+            cs.Error += SynchError;
             if (rbGoogleToOutlook.Checked)
             {
                 cs.SyncToOutlook();
@@ -172,7 +176,9 @@ namespace GContactsSync
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-
+            tsAbort.Available = (synchThread.ThreadState == ThreadState.Running);
+            tsSep.Visible = tsAbort.Available;
+            tsStart.Visible = !tsAbort.Available;
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -251,6 +257,24 @@ namespace GContactsSync
                 txtLog.Focus();
                 txtLog.Select(txtLog.Text.Length, 0);
             }
+        }
+
+        private void tsAbort_Click(object sender, EventArgs e)
+        {
+            if (synchThread.ThreadState == ThreadState.Running)
+            {
+                synchThread.Abort();
+            }
+        }
+
+        private void tsStart_Click(object sender, EventArgs e)
+        {
+            StartSync();
+        }
+
+        private void ctxNotificationIcon_DoubleClick(object sender, EventArgs e)
+        {
+
         }
 
     }
