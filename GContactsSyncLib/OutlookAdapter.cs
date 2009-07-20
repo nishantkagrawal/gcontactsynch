@@ -9,7 +9,7 @@ using Google.GData.Extensions;
 
 namespace GContactsSync
 {
-    class OutlookAdapter
+    public class OutlookAdapter
     {
         Application outlook;
         public delegate void OContactFetchedHandler(object sender, ContactItem contact);

@@ -11,3 +11,5 @@ C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyn
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.pdb
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSync.exe.config
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.MainForm.resources
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSyncLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSyncLib.pdb

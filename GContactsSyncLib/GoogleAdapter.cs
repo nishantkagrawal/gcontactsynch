@@ -7,10 +7,11 @@ using Google.GData.Client;
 using Google.Contacts;
 using Microsoft.Office.Interop.Outlook;
 using Google.GData.Extensions;
+using System.Windows.Forms;
 
 namespace GContactsSync
 {
-    class GoogleAdapter
+    public class GoogleAdapter
     {
         public delegate void GContactFetchedHandler(object sender, Contact contact);
         public event GContactFetchedHandler GContactFeched;
@@ -37,6 +38,14 @@ namespace GContactsSync
             rs = new RequestSettings(AppName,UserName,Password);
         }
 
+        public delegate void CreateContactFromOutlookDelegate(ContactItem oContact);
+
+        public void CreateContactFromOutlookAsync(ContactItem oContact)
+        {
+            CreateContactFromOutlookDelegate cc = new CreateContactFromOutlookDelegate(CreateContactFromOutlook);
+            cc.BeginInvoke(oContact, null, null);
+        }
+
         public void CreateContactFromOutlook(ContactItem oContact)
         {
             Contact gContact = new Contact();
@@ -46,11 +55,28 @@ namespace GContactsSync
             cr.Insert(feedUri, gContact);
         }
 
+        public delegate void UpdateContactDataDelegate (ContactItem oContact, Contact gContact);
+
+        public void UpdateContactFromOutlookAsync (ContactItem oContact, Contact gContact)
+        {
+            UpdateContactDataDelegate ud = new UpdateContactDataDelegate(UpdateContactDataFromOutlook);
+            ud.BeginInvoke(oContact, gContact, null, null);
+        }
+
         public void UpdateContactFromOutlook(ContactItem oContact, Contact gContact)
         {
-            ContactsRequest cr = new ContactsRequest(rs);
-            UpdateContactDataFromOutlook(oContact, gContact);
-            cr.Update(gContact);
+                if (gContact == null)
+                {
+                    var gContactsQuery = Contacts.Where(c => c.Title == oContact.FullName);
+                    if (gContactsQuery.Count() > 0)
+                    {
+                        gContact = gContactsQuery.First();
+                    }
+                }
+                ContactsRequest cr = new ContactsRequest(rs);
+                UpdateContactDataFromOutlook(oContact, gContact);
+                cr.Update(gContact);
+            
         }
 
         private void UpdateContactDataFromOutlook(ContactItem oContact, Contact gContact)
@@ -60,13 +86,14 @@ namespace GContactsSync
             {
                 gContact.PostalAddresses.Remove(BusinessAddressQuery.First());
             }
-            if (oContact.BusinessAddress.Length > 0)
+            if (oContact.BusinessAddress != null)
             {
                 PostalAddress BusinessAddress = new PostalAddress();
                 BusinessAddress.Rel = ContactsRelationships.IsWork;
                 BusinessAddress.Value = oContact.BusinessAddress;
                 gContact.PostalAddresses.Add(BusinessAddress);
             }
+            
             var HomeAddressQuery = gContact.PostalAddresses.Where(a => a.Home);
             if (HomeAddressQuery.Count() > 0)
             {

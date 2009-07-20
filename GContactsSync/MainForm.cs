@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Google.Contacts;
 using Microsoft.Office.Interop.Outlook;
 using System.Threading;
-using GContactsSync.Properties;
+using GContactsSyncLib;
 
 namespace GContactsSync
 {
@@ -97,13 +97,13 @@ namespace GContactsSync
 
         private void StartThread()
         {
-            ContactSync cs = new ContactSync(txtUser.Text, txtPassword.Text,Convert.ToInt32(numInterval.Value*60000));
+            ContactSync cs = new ContactSync(Config.Username, Config.Password,Convert.ToInt32(Config.Interval*60000));
             cs.GoogleSynched += GoogleSynched;
             cs.OutlookSynched += OutlookSynched;
             cs.StartSynching += StartSynching;
             cs.EndSynching += EndSynching;
             cs.Error += SynchError;
-            if (rbGoogleToOutlook.Checked)
+            if (Config.SyncDirection == Config.Direction.dirToOutlook)
             {
                 cs.SyncToOutlook();
             }
@@ -114,35 +114,8 @@ namespace GContactsSync
             
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            SaveSettings();
-            
-            if (synchThread.ThreadState == ThreadState.Running)
-            {
-                synchThread.Abort();
-                txtLog.Clear();
-            }
-            Hide();
-            StartSync();
-            
-        }
 
-        private void SaveSettings()
-        {
-            if (rbGoogleToOutlook.Checked)
-            {
-                Settings.Default.Direction = 0;
-            }
-            else
-            {
-                Settings.Default.Direction = 1;
-            }
-            Settings.Default.Interval = Convert.ToInt32(numInterval.Value);
-            Settings.Default.User = txtUser.Text;
-            Settings.Default.Password = EncryptDecrypt.Encrypt(txtPassword.Text);
-            Settings.Default.Save();
-        }
+        
         
         public void StartSync()
         {
@@ -153,8 +126,7 @@ namespace GContactsSync
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Show();
-            WindowState = FormWindowState.Normal;
+            Config.ShowConfig();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -224,7 +196,7 @@ namespace GContactsSync
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            txtUser.Focus();
+            
         }
 
         private void tabControl1_TabIndexChanged(object sender, EventArgs e)
@@ -241,7 +213,6 @@ namespace GContactsSync
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            tabControl1.SelectedIndex=1;
             Show();
         }
 
@@ -252,11 +223,9 @@ namespace GContactsSync
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (tabControl1.SelectedIndex == 1)
-            {
                 txtLog.Focus();
                 txtLog.Select(txtLog.Text.Length, 0);
-            }
+            
         }
 
         private void tsAbort_Click(object sender, EventArgs e)
