@@ -6,6 +6,7 @@ using Microsoft.Office.Interop.Outlook;
 using Google.Contacts;
 using Google.GData.Extensions;
 using System.Threading;
+using GContactsSyncLib;
 
 namespace GContactsSync
 {
@@ -21,7 +22,7 @@ namespace GContactsSync
         public event StartSynchingHandler StartSynching;
         public event StartSynchingHandler EndSynching;
 
-        public enum Direction {dirToGoogle,dirToOutlook};
+        
         GoogleAdapter gEnum;
         OutlookAdapter oEnum;
         int Interval;
@@ -35,15 +36,15 @@ namespace GContactsSync
 
         public void SyncToOutlook()
         {
-            Sync(Direction.dirToOutlook);
+            Sync(Config.Direction.dirToOutlook);
         }
         
         public void SyncToGoogle()
         {
-            Sync(Direction.dirToGoogle);
+            Sync(Config.Direction.dirToGoogle);
         }
 
-        public void Sync(Direction dir)
+        public void Sync(Config.Direction dir)
         {
             try
             {
@@ -90,7 +91,7 @@ namespace GContactsSync
                                     c.Emails.Contains(new EMail(item.Email3Address), comparer));
                                 if (qryFindGoogleContact.Count() > 0)
                                 {
-                                    if (dir == Direction.dirToOutlook)
+                                    if (dir == Config.Direction.dirToOutlook)
                                     {
                                         Contact gContact = qryFindGoogleContact.First();
                                         SyncContact(gContact, item, dir);
@@ -129,7 +130,7 @@ namespace GContactsSync
                                     item.Emails.Contains(new EMail(c.Email3Address), comparer));
                                 if (qryFindOutlookContact.Count() > 0)
                                 {
-                                    if (dir == Direction.dirToGoogle)
+                                    if (dir == Config.Direction.dirToGoogle)
                                     {
                                         ContactItem oContact = qryFindOutlookContact.First();
                                         SyncContact(item, oContact, dir);
@@ -177,9 +178,9 @@ namespace GContactsSync
             gEnum.CreateContactFromOutlook(item);
         }
 
-        private void SyncContact(Contact gContact, ContactItem item, Direction dir)
+        private void SyncContact(Contact gContact, ContactItem item, Config.Direction dir)
         {
-            if (dir == Direction.dirToGoogle)
+            if (dir == Config.Direction.dirToGoogle)
             {
                 gEnum.UpdateContactFromOutlook(item, gContact);
             }

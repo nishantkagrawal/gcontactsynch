@@ -11,3 +11,5 @@ C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyn
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Debug\GContactsSync.csproj.ResolveComReference.cache
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Debug\GContactsSync.MainForm.resources
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Debug\GContactsSync.exe.config
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Debug\GContactsSyncLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Debug\GContactsSyncLib.pdb

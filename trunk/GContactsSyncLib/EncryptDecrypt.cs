@@ -5,9 +5,9 @@ using System.Text;
 using System.Security.Cryptography;
 using System.IO;
 
-namespace GContactsSync
+namespace GContactsSyncLib
 {
-    class EncryptDecrypt
+    public class EncryptDecrypt
     {
         static byte[] bytes = ASCIIEncoding.ASCII.GetBytes("Ze1233ol");
 

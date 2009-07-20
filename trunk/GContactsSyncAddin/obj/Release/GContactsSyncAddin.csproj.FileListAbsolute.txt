@@ -1,0 +1,12 @@
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\obj\Release\ResolveAssemblyReference.cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\obj\Release\GContactsSyncAddin.csproj.ResolveComReference.cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\GContactsSyncAddin.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\GContactsSyncAddin.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\obj\Release\GContactsSyncAddin.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\obj\Release\GContactsSyncAddin.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\GContactsSyncLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\Google.GData.Extensions.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\Google.GData.Contacts.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\Google.GData.Client.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\GContactsSyncLib.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Release\GContactsSyncAddin.dll.config

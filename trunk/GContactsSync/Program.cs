@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using GContactsSync.Properties;
+using GContactsSyncLib;
+using Google.Contacts;
 
 namespace GContactsSync
 {
@@ -19,27 +21,9 @@ namespace GContactsSync
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             MainForm frm = new MainForm();
-            if (Settings.Default.Direction == 0)
-            {
-                frm.rbGoogleToOutlook.Checked = true;
-            }
-            else
-            {
-                frm.rbOutlookToGoogle.Checked = true;
-            }
-            frm.numInterval.Value = Settings.Default.Interval;
-            frm.txtUser.Text = Settings.Default.User;
-            if (Settings.Default.Password != "")
-            {
-                frm.txtPassword.Text = EncryptDecrypt.Decrypt(Settings.Default.Password);
-            }
-            IntPtr h = frm.Handle;
-            if (frm.txtUser.Text == "")
-                frm.Show();
-            else
-            {
-                frm.Invoke(new SimpleDelegate(frm.StartSync), null);
-            }
+            Config.CheckShowConfig();
+            List<Contact> c = new GoogleAdapter(Config.Username, Config.Password).Contacts;
+            frm.Invoke(new SimpleDelegate(frm.StartSync), null);
             Application.Run();
         }
     }
