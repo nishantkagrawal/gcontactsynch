@@ -34,15 +34,14 @@
             this.ctxNotificationIcon = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAbort = new System.Windows.Forms.ToolStripMenuItem();
             this.tsStart = new System.Windows.Forms.ToolStripMenuItem();
+            this.outlookToGmailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gMailToOutlookToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsSep = new System.Windows.Forms.ToolStripSeparator();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tmrSynching = new System.Windows.Forms.Timer(this.components);
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.imgSyncing = new System.Windows.Forms.ImageList(this.components);
-            this.outlookToGmailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.gMailToOutlookToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxNotificationIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -85,6 +84,20 @@
             this.tsStart.Text = "Full Sync";
             this.tsStart.Click += new System.EventHandler(this.tsStart_Click);
             // 
+            // outlookToGmailToolStripMenuItem
+            // 
+            this.outlookToGmailToolStripMenuItem.Name = "outlookToGmailToolStripMenuItem";
+            this.outlookToGmailToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.outlookToGmailToolStripMenuItem.Text = "Outlook to Gmail";
+            this.outlookToGmailToolStripMenuItem.Click += new System.EventHandler(this.outlookToGmailToolStripMenuItem_Click);
+            // 
+            // gMailToOutlookToolStripMenuItem
+            // 
+            this.gMailToOutlookToolStripMenuItem.Name = "gMailToOutlookToolStripMenuItem";
+            this.gMailToOutlookToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.gMailToOutlookToolStripMenuItem.Text = "GMail to Outlook";
+            this.gMailToOutlookToolStripMenuItem.Click += new System.EventHandler(this.gMailToOutlookToolStripMenuItem_Click);
+            // 
             // tsSep
             // 
             this.tsSep.Name = "tsSep";
@@ -116,10 +129,6 @@
             this.tmrSynching.Interval = 500;
             this.tmrSynching.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // toolTip1
-            // 
-            this.toolTip1.IsBalloon = true;
-            // 
             // imgSyncing
             // 
             this.imgSyncing.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgSyncing.ImageStream")));
@@ -128,19 +137,6 @@
             this.imgSyncing.Images.SetKeyName(1, "GCSAnim1.ico");
             this.imgSyncing.Images.SetKeyName(2, "GCSAnim2.ico");
             this.imgSyncing.Images.SetKeyName(3, "GCSAnim3.ico");
-            // 
-            // outlookToGmailToolStripMenuItem
-            // 
-            this.outlookToGmailToolStripMenuItem.Name = "outlookToGmailToolStripMenuItem";
-            this.outlookToGmailToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.outlookToGmailToolStripMenuItem.Text = "Outlook to Gmail";
-            this.outlookToGmailToolStripMenuItem.Click += new System.EventHandler(this.outlookToGmailToolStripMenuItem_Click);
-            // 
-            // gMailToOutlookToolStripMenuItem
-            // 
-            this.gMailToOutlookToolStripMenuItem.Name = "gMailToOutlookToolStripMenuItem";
-            this.gMailToOutlookToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
-            this.gMailToOutlookToolStripMenuItem.Text = "GMail to Outlook";
             // 
             // MainForm
             // 
@@ -170,7 +166,6 @@
         private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeToolStripMenuItem;
         private System.Windows.Forms.Timer tmrSynching;
-        private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ImageList imgSyncing;
         private System.Windows.Forms.ToolStripMenuItem tsAbort;

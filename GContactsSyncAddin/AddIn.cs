@@ -78,6 +78,7 @@ namespace GContactsSyncAddin
         {
             try
             {
+                //MessageBox.Show("Starting Addin from " + AppDomain.CurrentDomain.BaseDirectory);
                 
                 // Get the initial Application object
                 logger.Info("GContactsSync Connecting.");
@@ -225,14 +226,15 @@ namespace GContactsSyncAddin
         {
         }
 
-        private string ContactItemDisplay(ContactItem item)
-        {
-            return item.FullName.Length == 0 ? item.Email1Address : item.FullName;
-        }
+        
 
         
         private void Items_ItemChange(object Item)
         {
+            if (MutexManager.InFullSync())
+            {
+                return;
+            }
             try
             {      
                 if (Item is ContactItem)
@@ -240,13 +242,13 @@ namespace GContactsSyncAddin
                     ContactItem item = (ContactItem)Item;
                     if (MutexManager.IsBlocked(item))
                     {
-                        logger.Debug("Removing contact "+ContactItemDisplay(item)+ " from mutex file");
+                        logger.Debug("Removing contact "+OutlookAdapter.ContactItemDisplay(item)+ " from mutex file");
                         MutexManager.ClearBlockedContact(item);
                         return;
                     }
-                    logger.Info("Adding " + ContactItemDisplay(item) + " to mutex file");
+                    logger.Info("Adding " + OutlookAdapter.ContactItemDisplay(item) + " to mutex file");
                     MutexManager.AddToBlockedContacts(item);
-                    logger.Info("Updating " + ContactItemDisplay(item));
+                    logger.Info("Updating " + OutlookAdapter.ContactItemDisplay(item));
                     GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password,logger);
                     ga.UpdateContactFromOutlookAsync(item, null);
                 }
@@ -272,6 +274,10 @@ namespace GContactsSyncAddin
         /// <param name="Item">The Item wich was added to InboxFolder</param>
         private void Items_ItemAdd(object Item)
         {
+            if (MutexManager.InFullSync())
+            {
+                return;
+            }
             try
             {
                 // Check the ItemType, could be a MeetingAccept or something else
@@ -279,10 +285,16 @@ namespace GContactsSyncAddin
                 {
                     // Cast to ContactItem Object
                     Ol.ContactItem contact = (Ol.ContactItem)Item;
-
-                    logger.Info("Adding " + ContactItemDisplay(contact));        
+                    if (MutexManager.IsBlocked(contact))
+                    {
+                        logger.Debug("Removing contact " + OutlookAdapter.ContactItemDisplay(contact) + " from mutex file");
+                        MutexManager.ClearBlockedContact(contact);
+                        return;
+                    }
+                    logger.Info("Adding " + OutlookAdapter.ContactItemDisplay(contact));        
                     // Do something with Item
                     GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password,logger);
+                    MutexManager.AddToBlockedContacts(contact);
                     ga.CreateContactFromOutlookAsync(contact);
                     // Release COM Object
                     contact = null;

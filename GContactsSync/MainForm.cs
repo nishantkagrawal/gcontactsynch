@@ -142,6 +142,20 @@ namespace GContactsSync
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ShouldClose = true;
+            try
+            {
+                if (synchThread.ThreadState == ThreadState.Running)
+                {
+                    synchThread.Abort();
+                }
+                if (fullSyncThread.ThreadState == ThreadState.Running)
+                {
+                    fullSyncThread.Abort();
+                }
+            }
+            catch
+            {
+            }
             Close();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
@@ -203,6 +217,10 @@ namespace GContactsSync
             {
                 synchThread.Abort();
             }
+            if (fullSyncThread.ThreadState == ThreadState.Running)
+            {
+                fullSyncThread.Abort();
+            }
         }
 
         private void tsStart_Click(object sender, EventArgs e)
@@ -217,15 +235,38 @@ namespace GContactsSync
 
         private void outlookToGmailToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             fullSyncThread = new Thread(new ParameterizedThreadStart(StartFullSync));
             fullSyncThread.Start(Config.Direction.dirToGoogle);
-            
         }
 
         private void StartFullSync(object direction)
         {
-            Config.Direction dir = (Config.Direction)direction;
+            if (Monitor.TryEnter(ContactSync.SynchRoot))
+            {
+                try
+                {
+                    Config.Direction dir = (Config.Direction)direction;
+                    ContactSync cs = new ContactSync(Config.Username, Config.Password, Convert.ToInt32(Config.Interval * 60000));
+                    cs.GoogleSynched += GoogleSynched;
+                    cs.OutlookSynched += OutlookSynched;
+                    cs.StartSynching += StartSynching;
+                    cs.EndSynching += EndSynching;
+                    cs.Error += SynchError;
+                    cs.FullSync(dir);
+                }
+                finally
+                {
+                    Monitor.Exit(ContactSync.SynchRoot);
+                }
+            }
+            else
+                MessageBox.Show("Sync in progress... cannot run full sync");
+        }
+
+        private void gMailToOutlookToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fullSyncThread = new Thread(new ParameterizedThreadStart(StartFullSync));
+            fullSyncThread.Start(Config.Direction.dirToOutlook);
         }
 
     }
