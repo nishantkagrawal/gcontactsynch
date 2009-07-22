@@ -26,33 +26,22 @@ namespace GContactsSyncLib
 
         private void SaveSettings()
         {
-            if (rbGoogleToOutlook.Checked)
-            {
-                Config.SyncDirection = Config.Direction.dirToOutlook;
-            }
-            else
-            {
-                Config.SyncDirection = Config.Direction.dirToGoogle;
-            }
             Config.Interval = Convert.ToInt32(numInterval.Value);
             Config.Username = txtUser.Text;
             Config.Password = txtPassword.Text;
-            Config.Save();
         }
 
         private void ConfigForm_Load(object sender, EventArgs e)
         {
-            if (Config.SyncDirection == Config.Direction.dirToOutlook)
-            {
-                rbGoogleToOutlook.Checked = true;
-            }
-            else
-            {
-                rbOutlookToGoogle.Checked = true;
-            }
             numInterval.Value = Config.Interval;
             txtUser.Text = Config.Username;
-            txtPassword.Text = Config.Password;            
+            txtPassword.Text = Config.Password;
+            txtUser.Focus();
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            SaveSettings();
         }
         
         

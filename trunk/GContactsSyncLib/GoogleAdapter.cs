@@ -8,11 +8,14 @@ using Google.Contacts;
 using Microsoft.Office.Interop.Outlook;
 using Google.GData.Extensions;
 using System.Windows.Forms;
+using NLog;
+using System.Runtime.InteropServices;
 
 namespace GContactsSync
 {
     public class GoogleAdapter
     {
+        private Logger logger = null;
         public delegate void GContactFetchedHandler(object sender, Contact contact);
         public event GContactFetchedHandler GContactFeched;
         string AppName = typeof(GoogleAdapter).Namespace;
@@ -33,9 +36,54 @@ namespace GContactsSync
         {
 
         }
-        public GoogleAdapter(string UserName,string Password)
+        public GoogleAdapter(string UserName,string Password, Logger logger)
         {
             rs = new RequestSettings(AppName,UserName,Password);
+            this.logger = logger;
+        }
+
+        public string ContactDisplay(Contact c)
+        {
+            return c.ToString();
+        }
+
+        public List<Contact> ContactsChangedSince(DateTime d)
+        {
+            List<Contact> result = new List<Contact>();
+            ContactsRequest cr = new ContactsRequest(rs);
+            ContactsQuery q = new ContactsQuery(ContactsQuery.CreateContactsUri("default"));
+            q.StartDate = d;
+            Feed<Contact> feed = cr.Get<Contact>(q);
+            foreach (Contact c in feed.Entries)
+            {
+                result.Add(c);
+            }
+            return result;
+        }
+
+
+        private void LogError(string msg)
+        {
+            if (logger != null)
+            {
+                logger.Error(msg);
+            }
+        }
+
+        private void LogDebug(string msg)
+        {
+            if (logger != null)
+            {
+                logger.Debug(msg);
+            }
+        }
+
+        private void LogInfo(string msg)
+        {
+            if (logger != null)
+            {
+                logger.Info(msg);
+            }
         }
 
         public delegate void CreateContactFromOutlookDelegate(ContactItem oContact);
@@ -48,35 +96,62 @@ namespace GContactsSync
 
         public void CreateContactFromOutlook(ContactItem oContact)
         {
-            Contact gContact = new Contact();
-            ContactsRequest cr = new ContactsRequest(rs);
-            Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
-            UpdateContactDataFromOutlook(oContact, gContact);
-            cr.Insert(feedUri, gContact);
+            try
+            {
+                LogInfo("Creating contact from Outlook");
+                Contact gContact = new Contact();
+                ContactsRequest cr = new ContactsRequest(rs);
+                Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
+                UpdateContactDataFromOutlook(oContact, gContact);
+                cr.Insert(feedUri, gContact);
+                LogInfo("Contact created");
+            }
+            catch (System.Exception ex)
+            {
+                LogError(ex.Message);
+                LogDebug(ex.StackTrace.ToString());
+            }
         }
 
-        public delegate void UpdateContactDataDelegate (ContactItem oContact, Contact gContact);
+        public delegate void UpdateContactDelegate (ContactItem oContact, Contact gContact);
 
         public void UpdateContactFromOutlookAsync (ContactItem oContact, Contact gContact)
         {
-            UpdateContactDataDelegate ud = new UpdateContactDataDelegate(UpdateContactDataFromOutlook);
+            UpdateContactDelegate ud = new UpdateContactDelegate(UpdateContactFromOutlook);
             ud.BeginInvoke(oContact, gContact, null, null);
         }
 
+        [DllImport("User32.dll")]
+        public static extern int MessageBox(int h, string m, string c, int type);
+
         public void UpdateContactFromOutlook(ContactItem oContact, Contact gContact)
         {
+            try
+            {   
+                //MessageBox.Show("In Update");
+                LogInfo("Updating contact from Outlook");
                 if (gContact == null)
                 {
+                    LogInfo("Finding contact by FullName");
                     var gContactsQuery = Contacts.Where(c => c.Title == oContact.FullName);
                     if (gContactsQuery.Count() > 0)
                     {
                         gContact = gContactsQuery.First();
+                        LogInfo("Contact found: " + gContact.Title);
                     }
+                    else
+                        throw new System.Exception("Contact not found by FullName: " + oContact.FullName);
                 }
                 ContactsRequest cr = new ContactsRequest(rs);
                 UpdateContactDataFromOutlook(oContact, gContact);
                 cr.Update(gContact);
-            
+                LogInfo("Contact updated");
+            }
+            catch (System.Exception ex)
+            {
+                LogError(ex.Message);
+                LogDebug(ex.StackTrace.ToString());
+            }
         }
 
         private void UpdateContactDataFromOutlook(ContactItem oContact, Contact gContact)

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Google Outlook Contact Sync"
-#define MyAppVerName "Google Outlook Contact Sync 0.9.1.0"
+#define MyAppVerName "Google Outlook Contact Sync 1.0.1.0 (RC1)"
 #define MyAppPublisher "Daniel Polistchuck"
 #define MyAppURL "http://code.google.com/p/gcontactsynch/"
 #define MyAppExeName "GContactsSync.exe"
@@ -40,6 +40,36 @@ Source: C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GCon
 Source: C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\Google.GData.Contacts.dll; DestDir: {app}; Flags: ignoreversion
 Source: C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\Google.GData.Extensions.dll; DestDir: {app}; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.ComInterop.dll; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.ComInterop.xml; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.dll; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.xml; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.xsd; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.dll; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.dll.manifest; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.exp; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.lib; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.pdb; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\Policy.1.0.NLog.dll; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\Policy.1.0.NLog.xml; DestDir: {code:GetInstallDir}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\Policy.1.0.NLog.xml; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\Policy.1.0.NLog.dll; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.pdb; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.lib; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.exp; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.dll.manifest; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLogC.dll; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.xsd; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.xml; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.dll; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.ComInterop.xml; DestDir: {app}
+Source: ..\..\..\..\..\..\..\Program Files\NLog\bin\net-2.0\NLog.ComInterop.dll; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.dll; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.dll.config; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.pdb; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.tlb; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncLib.dll; DestDir: {app}
+Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncLib.pdb; DestDir: {app}
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
@@ -49,4 +79,46 @@ Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}; Filen
 Name: {userstartup}\{#MyAppName}; Filename: {app}\{#MyAppExeName}
 
 [Run]
+Filename: {win}\Microsoft.Net\Framework\v2.0.50727\RegAsm.exe; Parameters: {app}\GContactsSyncAddin.dll  /tlb:{app}\GContactsSyncAddin.tlb -codebase; StatusMsg: Registering Outlook Addin; Flags: runhidden
 Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall skipifsilent
+[Code]
+function GetInstallDir(def: String) : string;
+var
+  InstallDir : string;
+begin
+  Result := 'MyDefaultInstallDir';
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\Office\12.0\Outlook\InstallRoot',
+  'Path', InstallDir) then
+  begin
+    // Successfully read the value.
+    Result := InstallDir;
+  end
+  else
+    RaiseException('Outlook 2007 not Installed');
+end;
+
+function FrameWorkName(Param: String): String;
+var
+  Names: TArrayOfString;
+  I: Integer;
+  FrameworkInstall: Cardinal;
+begin
+  Result := '';
+  if RegGetSubkeyNames(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP', Names) then begin
+    for I := 0 to GetArrayLength(Names) - 1 do begin
+       RegQueryDwordValue(HKLM, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\'+Names[I], 'Install', FrameworkInstall);
+       if FrameworkInstall = 1 then begin
+          Result := Names[I];
+       end;
+     end;
+  end;
+end;
+
+
+[UninstallRun]
+Filename: {win}\Microsoft.Net\Framework\v2.0.50727\RegAsm.exe; Parameters: /unregister {app}\GContactsSyncAddin.dll; StatusMsg: Unregistering Outlook Addin; Flags: runhidden
+[Registry]
+Root: HKCU; Subkey: Software\Microsoft\Office\Outlook\Addins\GContactsSync.Connect; ValueType: dword; ValueName: CommandLineSafe; ValueData: 0; Flags: uninsdeletekey
+Root: HKCU; Subkey: Software\Microsoft\Office\Outlook\Addins\GContactsSync.Connect; ValueType: string; ValueName: Description; ValueData: Google Contacts Sync Addin for Outlook
+Root: HKCU; Subkey: Software\Microsoft\Office\Outlook\Addins\GContactsSync.Connect; ValueType: string; ValueName: FriendlyName; ValueData: GContactsSync Addin for Outlook
+Root: HKCU; Subkey: Software\Microsoft\Office\Outlook\Addins\GContactsSync.Connect; ValueType: dword; ValueName: LoadBehavior; ValueData: 3

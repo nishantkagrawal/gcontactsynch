@@ -1,5 +1,5 @@
 ﻿// ##################################################################################
-//
+// Addin Skeleton from:
 // Sample for InboxFolder ItemAdd Event 
 // by Helmut Obertanner ( flash [at] x4u dot de
 //
@@ -10,28 +10,20 @@ namespace GContactsSyncAddin
     using System.Diagnostics;
     using Microsoft.Office.Core;
     using System.Collections.Generic;
-    using System.Windows.Forms;
+//    using System.Windows.Forms;
     using Extensibility;
     using System.Runtime.InteropServices;
-    
-    // Note: When AddIn was created with Visual Studio Wizard, remove reference to Office.dll and
-    // add reference to COM Office11 (Office 2003)
     using Ol = Microsoft.Office.Interop.Outlook;
     using MSO = Microsoft.Office.Core;
     using Microsoft.Office.Interop.Outlook;
     using GContactsSync;
     using GContactsSyncLib;
+    using NLog;
+    using NLog.Config;
+    using NLog.Targets;
+    using System.Windows.Forms;
+    using System.IO;
 
-
-    #region Read me for Add-in installation and setup information.
-    // When run, the Add-in wizard prepared the registry for the Add-in.
-    // At a later time, if the Add-in becomes unavailable for reasons such as:
-    //   1) You moved this project to a computer other than which is was originally created on.
-    //   2) You chose 'Yes' when presented with a message asking if you wish to remove the Add-in.
-    //   3) Registry corruption.
-    // you will need to re-register the Add-in by building the MyAddin21Setup project 
-    // by right clicking the project in the Solution Explorer, then choosing install.
-    #endregion
 
     /// <summary>
     ///   The object for implementing an Add-in.
@@ -40,7 +32,7 @@ namespace GContactsSyncAddin
     [GuidAttribute("75c7f02f-d056-4d47-ae2e-968fbd804f07"), ProgId("GContactsSync.Connect")]
     public class AddIn : Object, Extensibility.IDTExtensibility2
     {
-
+        private static Logger logger = Config.GetAddinLogger(); 
         /// <summary>
         /// The Outlook Application Object
         /// </summary>
@@ -65,6 +57,7 @@ namespace GContactsSyncAddin
         /// </summary>
         public AddIn()
         {
+            
         }
 
         /// <summary>
@@ -85,7 +78,9 @@ namespace GContactsSyncAddin
         {
             try
             {
+                
                 // Get the initial Application object
+                logger.Info("GContactsSync Connecting.");
                 myApplicationObject = (Ol.Application)application;
                 myAddInInstance = addInInst;
                
@@ -94,9 +89,11 @@ namespace GContactsSyncAddin
                 //    MessageBox.Show("On Connection - Startup");
                     OnStartupComplete(ref custom);
                 }
-
+                logger.Info("GContactsSync connected succesfully.");
             } catch (System.Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace.ToString());
                 MessageBox.Show("Error " + ex.Message);
             }
 
@@ -133,6 +130,8 @@ namespace GContactsSyncAddin
                 myApplicationObject = null;            }
             catch (System.Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace.ToString());
                 MessageBox.Show(ex.Message);
             }
         }
@@ -171,13 +170,18 @@ namespace GContactsSyncAddin
                 // Register for It``emAdd Event
                 // Note: if more then 16 Items are added, the event doesn't come.
                 items = ContactsFolder.Items;
+                logger.Debug("Setting ItemAdd Event");
                 items.ItemAdd += new Microsoft.Office.Interop.Outlook.ItemsEvents_ItemAddEventHandler(Items_ItemAdd);
+                logger.Debug("Setting ItemChange Event");
                 items.ItemChange += new Microsoft.Office.Interop.Outlook.ItemsEvents_ItemChangeEventHandler(Items_ItemChange);
+                logger.Debug("Setting ItemRemove Event");
                 items.ItemRemove += new Microsoft.Office.Interop.Outlook.ItemsEvents_ItemRemoveEventHandler(Items_ItemRemove);
                 RefreshContacts();
             }
             catch (System.Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace.ToString());
                 MessageBox.Show(ex.Message);
             }
         }
@@ -221,20 +225,37 @@ namespace GContactsSyncAddin
         {
         }
 
+        private string ContactItemDisplay(ContactItem item)
+        {
+            return item.FullName.Length == 0 ? item.Email1Address : item.FullName;
+        }
+
+        
         private void Items_ItemChange(object Item)
         {
             try
-            {
+            {      
                 if (Item is ContactItem)
                 {
                     ContactItem item = (ContactItem)Item;
-                    GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password);
+                    if (MutexManager.IsBlocked(item))
+                    {
+                        logger.Debug("Removing contact "+ContactItemDisplay(item)+ " from mutex file");
+                        MutexManager.ClearBlockedContact(item);
+                        return;
+                    }
+                    logger.Info("Adding " + ContactItemDisplay(item) + " to mutex file");
+                    MutexManager.AddToBlockedContacts(item);
+                    logger.Info("Updating " + ContactItemDisplay(item));
+                    GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password,logger);
                     ga.UpdateContactFromOutlookAsync(item, null);
                 }
                 
             }
             catch (System.Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace.ToString());
                 MessageBox.Show(ex.Message);
             }
         }
@@ -242,6 +263,7 @@ namespace GContactsSyncAddin
 
         private void Items_ItemRemove()
         {
+            
         }
 
         /// <summary>
@@ -258,9 +280,9 @@ namespace GContactsSyncAddin
                     // Cast to ContactItem Object
                     Ol.ContactItem contact = (Ol.ContactItem)Item;
 
-                    
+                    logger.Info("Adding " + ContactItemDisplay(contact));        
                     // Do something with Item
-                    GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password);
+                    GoogleAdapter ga = new GoogleAdapter(Config.Username, Config.Password,logger);
                     ga.CreateContactFromOutlookAsync(contact);
                     // Release COM Object
                     contact = null;
@@ -269,6 +291,8 @@ namespace GContactsSyncAddin
             }
             catch (System.Exception ex)
             {
+                logger.Error(ex.Message);
+                logger.Debug(ex.StackTrace.ToString());
                 MessageBox.Show(ex.Message);
             }
         }

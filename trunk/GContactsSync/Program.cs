@@ -22,7 +22,9 @@ namespace GContactsSync
             Application.SetCompatibleTextRenderingDefault(false);
             MainForm frm = new MainForm();
             Config.CheckShowConfig();
-            List<Contact> c = new GoogleAdapter(Config.Username, Config.Password).Contacts;
+            //force handle creation
+            IntPtr h = frm.Handle;
+            
             frm.Invoke(new SimpleDelegate(frm.StartSync), null);
             Application.Run();
         }

@@ -6,7 +6,7 @@ using Google.GData.Extensions;
 
 namespace GContactsSync
 {
-    class EmailComparer : IEqualityComparer<EMail>
+    public class EmailComparer : IEqualityComparer<EMail>
     {
         #region IEqualityComparer<EMail> Members
 

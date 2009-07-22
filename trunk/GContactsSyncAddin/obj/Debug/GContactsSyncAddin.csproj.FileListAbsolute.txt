@@ -10,3 +10,8 @@ C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyn
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\Google.GData.Contacts.dll
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\Google.GData.Client.dll
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\GContactsSyncLib.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\NLog.config
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\NLog.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\NLog.xml
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\PropertyFileLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncAddin\bin\Debug\PropertyFileLib.pdb

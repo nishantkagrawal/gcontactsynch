@@ -19,15 +19,33 @@ namespace GContactsSync
         MAPIFolder contactsFolder;
             
 
-        public void CreateContactFromGoogle (Contact gContact)
+        public string CreateContactFromGoogle (Contact gContact)
         {
             ContactItem oContact = (ContactItem)outlook.CreateItem(OlItemType.olContactItem);
             UpdateContactDataFromGoogle(gContact, oContact);
+            return oContact.EntryID;
         }
 
         public void UpdateContactFromGoogle (Contact gContact, ContactItem oContact)
         {
+            if (oContact == null)
+            {
+                var qryC = Contacts.Where(c => c.FullName == gContact.Title ||
+                    gContact.Emails.Contains(new EMail(c.Email1Address), new EmailComparer()) ||
+                    gContact.Emails.Contains(new EMail(c.Email2Address), new EmailComparer()) ||
+                    gContact.Emails.Contains(new EMail(c.Email3Address), new EmailComparer()));
+                if (qryC.Count() > 0)
+                {
+                    oContact = qryC.First();
+                }
+                else
+                {
+                    CreateContactFromGoogle(gContact);
+                    return;
+                }
+            }
             UpdateContactDataFromGoogle(gContact, oContact);
+            
         }
 
         private void UpdateContactDataFromGoogle(Contact gContact, ContactItem oContact)
