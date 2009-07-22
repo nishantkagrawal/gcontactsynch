@@ -10,13 +10,16 @@ using Google.Contacts;
 using Microsoft.Office.Interop.Outlook;
 using System.Threading;
 using GContactsSyncLib;
+using NLog;
 
 namespace GContactsSync
 {
     public partial class MainForm : Form
     {
+        static Logger logger = ContactSync.logger;
         bool ShouldClose = false;
         Thread synchThread;
+        Thread fullSyncThread;
         int indAnim;
 
         public MainForm()
@@ -64,13 +67,12 @@ namespace GContactsSync
 
         public void StartSynching(object sender)
         {
-            if (txtLog.InvokeRequired)
+            if (this.InvokeRequired)
             {
-                txtLog.Invoke(new StartEndSynchingDelegate(StartSynching), sender);
+                this.Invoke(new StartEndSynchingDelegate(StartSynching), sender);
             }
             else
             {
-                txtLog.AppendText("---Starting to sync...\r\n");
                 ntfIcon.Text = "Starting to Synchronize";
                 //tmrSyncing.Interval = 100;
                 tmrSynching.Enabled = true;
@@ -84,10 +86,6 @@ namespace GContactsSync
             }
             else
             {
-                if (synchThread.ThreadState == ThreadState.AbortRequested)
-                    AddLogText("--Synchronization Aborted");
-                else
-                    AddLogText("--Synchronization Finished");
                 tmrSynching.Enabled = false;
                 indAnim = 0;
                 ntfIcon.Icon = this.Icon;
@@ -103,23 +101,11 @@ namespace GContactsSync
             cs.StartSynching += StartSynching;
             cs.EndSynching += EndSynching;
             cs.Error += SynchError;
-            if (Config.SyncDirection == Config.Direction.dirToOutlook)
-            {
-                cs.SyncToOutlook();
-            }
-            else
-            {
-                cs.SyncToGoogle();
-            }
-            
+            cs.SyncFromGoogle();
         }
-
-
-        
         
         public void StartSync()
         {
-            txtLog.Clear();
             synchThread = new Thread(new ThreadStart(StartThread));
             synchThread.Start();
         }
@@ -160,32 +146,17 @@ namespace GContactsSync
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
 
-        private delegate void AddLogTextDelegate(String Text);
-
-        private void AddLogText(String Text)
-        {
-            if (this.txtLog.InvokeRequired)
-            {
-                // This is a worker thread so delegate the task.
-                this.txtLog.Invoke(new AddLogTextDelegate(this.AddLogText), Text);
-            }
-            else
-            {
-                // This is the UI thread so perform the task.
-                this.txtLog.AppendText(Text+"\r\n");
-                this.txtLog.Select(txtLog.Text.Length, 0);
-            }
-        }
+        
 
         public void OutlookSynched(object sender, ContactItem contact, int current, int total)
         {
             ntfIcon.Text = "Google->Outlook " + current.ToString() + " of " + total.ToString();
-            AddLogText("Google->Outlook " + current.ToString() + " of " + total.ToString());
+            //logger ("Google->Outlook " + current.ToString() + " of " + total.ToString());
         }
         public void GoogleSynched(object sender, Contact contact, int current, int total)
         {
             ntfIcon.Text = "Outlook->Google " + current.ToString() + " of " + total.ToString();
-            AddLogText("Outlook->Google " + current.ToString() + " of " + total.ToString());
+            //AddLogText("Outlook->Google " + current.ToString() + " of " + total.ToString());
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -206,8 +177,7 @@ namespace GContactsSync
 
         private void tpLog_Enter(object sender, EventArgs e)
         {
-            txtLog.Focus();
-            txtLog.Select(txtLog.Text.Length, 0);
+            
             
         }
 
@@ -223,8 +193,7 @@ namespace GContactsSync
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
-                txtLog.Focus();
-                txtLog.Select(txtLog.Text.Length, 0);
+            
             
         }
 
@@ -238,12 +207,25 @@ namespace GContactsSync
 
         private void tsStart_Click(object sender, EventArgs e)
         {
-            StartSync();
+            
         }
 
         private void ctxNotificationIcon_DoubleClick(object sender, EventArgs e)
         {
 
+        }
+
+        private void outlookToGmailToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            fullSyncThread = new Thread(new ParameterizedThreadStart(StartFullSync));
+            fullSyncThread.Start(Config.Direction.dirToGoogle);
+            
+        }
+
+        private void StartFullSync(object direction)
+        {
+            Config.Direction dir = (Config.Direction)direction;
         }
 
     }

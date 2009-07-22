@@ -7,11 +7,17 @@ using Google.Contacts;
 using Google.GData.Extensions;
 using System.Threading;
 using GContactsSyncLib;
+using System.IO;
+using Google.GData.Contacts;
+using System.Windows.Forms;
+using NLog;
 
 namespace GContactsSync
 {
     class ContactSync 
     {
+        public static Logger logger = Config.GetAppLogger();
+
         public delegate void OutlookSynchedHandler(object sender, ContactItem contact,  int current, int total);
         public delegate void GoogleSynchedHandler(object sender, Contact contact, int current, int total);
         public delegate void ErrorHandler(object sender, System.Exception ex);
@@ -23,28 +29,112 @@ namespace GContactsSync
         public event StartSynchingHandler EndSynching;
 
         
-        GoogleAdapter gEnum;
-        OutlookAdapter oEnum;
+        GoogleAdapter googleAdapter;
+        OutlookAdapter outlookAdapter;
         int Interval;
 
         public ContactSync(string Username, string Password, int Interval)
         {
-            gEnum = new GoogleAdapter(Username, Password);
-            oEnum = new OutlookAdapter();
+            googleAdapter = new GoogleAdapter(Username, Password,null);
+            outlookAdapter = new OutlookAdapter();
             this.Interval = Interval;
         }
 
-        public void SyncToOutlook()
-        {
-            Sync(Config.Direction.dirToOutlook);
-        }
         
-        public void SyncToGoogle()
+        private void SetLastGoogleFetch(DateTime d)
         {
-            Sync(Config.Direction.dirToGoogle);
+            StreamWriter sw = new StreamWriter(Config.LocalUserPath()+"\\GoogleFetch.dat");
+            sw.Write(d.ToString("yyyy-MM-dd HH:mm:ss"));
+            sw.Close();
         }
 
-        public void Sync(Config.Direction dir)
+        private DateTime GetLastGoogleFetch ()
+        {
+            DateTime result;
+            try
+            {
+                StreamReader sr = new StreamReader(Config.LocalUserPath() + "\\GoogleFetch.dat");
+                try
+                {
+                    result = DateTime.ParseExact(sr.ReadLine(), "yyyy-MM-dd HH:mm:ss", null);
+                }
+                finally
+                {
+                    sr.Close();
+                }
+            } catch
+            {
+                result = DateTime.Now;
+            }
+            return result;
+        }
+
+        public void SyncFromGoogle ()
+        {
+            do
+            {
+                try
+                {
+                    logger.Info("Starting sync from Google...");
+                    DateTime lastFetch = GetLastGoogleFetch();
+                    logger.Debug("Last fetch date: " + lastFetch.ToShortDateString());
+                    
+                    if (StartSynching != null) StartSynching(this);
+                    try
+                    {
+                        logger.Info("Obtaining updated Google contacts");
+                        List<Contact> contacts = googleAdapter.ContactsChangedSince(lastFetch);
+                        foreach (Contact c in contacts)
+                        {
+                            if (MutexManager.IsBlocked(c))
+                            {
+                                logger.Debug("Removing contact " + googleAdapter.ContactDisplay(c) + " from mutex file");
+                                MutexManager.ClearBlockedContact(c);
+                                continue;
+                            }
+                            logger.Info ("Syncronizing "+googleAdapter.ContactDisplay(c));
+                            logger.Debug("Adding " + googleAdapter.ContactDisplay(c) + " to mutex list");
+                            MutexManager.AddToBlockedContacts(c);
+                            outlookAdapter.UpdateContactFromGoogle(c, null);
+                                logger.Info(googleAdapter.ContactDisplay(c) + " syncrhonized");
+                            if (Thread.CurrentThread.ThreadState == ThreadState.AbortRequested)
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if (EndSynching != null) EndSynching(this);
+                    }
+                    logger.Debug("Setting last fetch date");
+                    SetLastGoogleFetch(DateTime.Now);
+                    logger.Info("Waiting for " + Interval + " milliseconds.");
+                    Thread.Sleep(Interval);
+
+                }
+                catch (System.Exception ex)
+                {
+                    logger.Info(ex.Message);
+                    logger.Debug(ex.StackTrace.ToString());
+                    MessageBox.Show("Error " + ex.Message);
+                }
+            } while (Thread.CurrentThread.ThreadState != ThreadState.AbortRequested);
+
+        }
+
+        
+                public void FullSyncToOutlook()
+        {
+            FullSync(Config.Direction.dirToOutlook);
+        }
+        
+        public void FullSyncToGoogle()
+        {
+            FullSync(Config.Direction.dirToGoogle);
+        }
+
+        public void FullSync(Config.Direction dir)
         {
             try
             {
@@ -54,25 +144,8 @@ namespace GContactsSync
                     List<ContactItem> OutlookContacts;
                     List<Contact> GoogleContacts;
 
-                    OutlookContacts = oEnum.Contacts;
-                    GoogleContacts = gEnum.Contacts;
-
-                    //if (dir == Direction.dirToGoogle)
-                    //{
-                    //    GoogleContacts = GoogleContacts.Where(c =>
-                    //        !OutlookContacts.Select(o => o.FullName).Contains(c.Title) &
-                    //        OutlookContacts.Select(o => o.Email1Address).Intersect(c.Emails.Select(e => e.Address)) == null &
-                    //        OutlookContacts.Select(o => o.Email2Address).Intersect(c.Emails.Select(e => e.Address)) == null &
-                    //        OutlookContacts.Select(o => o.Email3Address).Intersect(c.Emails.Select(e => e.Address)) == null).ToList();
-                    //}
-                    //else
-                    //{
-                    //    OutlookContacts = OutlookContacts.Where(o =>
-                    //        !GoogleContacts.Select(c => c.Title).Contains(o.FullName) &
-                    //        GoogleContacts.Where(c => c.Emails.Select(e => e.Address).Contains(o.Email1Address)).Count() == 0 &
-                    //        GoogleContacts.Where(c => c.Emails.Select(e => e.Address).Contains(o.Email2Address)).Count() == 0 &
-                    //        GoogleContacts.Where(c => c.Emails.Select(e => e.Address).Contains(o.Email3Address)).Count() == 0).ToList();
-                    //}
+                    OutlookContacts = outlookAdapter.Contacts;
+                    GoogleContacts = googleAdapter.Contacts;
 
                     EmailComparer comparer = new EmailComparer();
                     int i = 0;
@@ -170,23 +243,23 @@ namespace GContactsSync
 
         private void CreateOutlookContact(Contact item)
         {
-            oEnum.CreateContactFromGoogle(item);
+            outlookAdapter.CreateContactFromGoogle(item);
         }
 
         private void CreateGoogleContact(ContactItem item)
         {
-            gEnum.CreateContactFromOutlook(item);
+            googleAdapter.CreateContactFromOutlook(item);
         }
 
         private void SyncContact(Contact gContact, ContactItem item, Config.Direction dir)
         {
             if (dir == Config.Direction.dirToGoogle)
             {
-                gEnum.UpdateContactFromOutlook(item, gContact);
+                googleAdapter.UpdateContactFromOutlook(item, gContact);
             }
             else
             {
-                oEnum.UpdateContactFromGoogle(gContact, item);
+                outlookAdapter.UpdateContactFromGoogle(gContact, item);
             }
         }
     }

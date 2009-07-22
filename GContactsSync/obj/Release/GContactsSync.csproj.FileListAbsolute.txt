@@ -13,3 +13,7 @@ C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyn
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\obj\Release\GContactsSync.MainForm.resources
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSyncLib.dll
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\GContactsSyncLib.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\NLog.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\NLog.xml
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\PropertyFileLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSync\bin\Release\PropertyFileLib.pdb

@@ -41,7 +41,8 @@
             this.tmrSynching = new System.Windows.Forms.Timer(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.imgSyncing = new System.Windows.Forms.ImageList(this.components);
-            this.txtLog = new System.Windows.Forms.RichTextBox();
+            this.outlookToGmailToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gMailToOutlookToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ctxNotificationIcon.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +64,7 @@
             this.toolStripMenuItem1,
             this.closeToolStripMenuItem});
             this.ctxNotificationIcon.Name = "contextMenuStrip1";
-            this.ctxNotificationIcon.Size = new System.Drawing.Size(181, 120);
+            this.ctxNotificationIcon.Size = new System.Drawing.Size(181, 142);
             this.ctxNotificationIcon.DoubleClick += new System.EventHandler(this.ctxNotificationIcon_DoubleClick);
             this.ctxNotificationIcon.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
@@ -76,9 +77,12 @@
             // 
             // tsStart
             // 
+            this.tsStart.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.outlookToGmailToolStripMenuItem,
+            this.gMailToOutlookToolStripMenuItem});
             this.tsStart.Name = "tsStart";
             this.tsStart.Size = new System.Drawing.Size(180, 22);
-            this.tsStart.Text = "Sync Now";
+            this.tsStart.Text = "Full Sync";
             this.tsStart.Click += new System.EventHandler(this.tsStart_Click);
             // 
             // tsSep
@@ -125,15 +129,18 @@
             this.imgSyncing.Images.SetKeyName(2, "GCSAnim2.ico");
             this.imgSyncing.Images.SetKeyName(3, "GCSAnim3.ico");
             // 
-            // txtLog
+            // outlookToGmailToolStripMenuItem
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 12);
-            this.txtLog.Name = "txtLog";
-            this.txtLog.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(305, 279);
-            this.txtLog.TabIndex = 1;
-            this.txtLog.Text = "";
-            this.toolTip1.SetToolTip(this.txtLog, "Click to auto-scroll log");
+            this.outlookToGmailToolStripMenuItem.Name = "outlookToGmailToolStripMenuItem";
+            this.outlookToGmailToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.outlookToGmailToolStripMenuItem.Text = "Outlook to Gmail";
+            this.outlookToGmailToolStripMenuItem.Click += new System.EventHandler(this.outlookToGmailToolStripMenuItem_Click);
+            // 
+            // gMailToOutlookToolStripMenuItem
+            // 
+            this.gMailToOutlookToolStripMenuItem.Name = "gMailToOutlookToolStripMenuItem";
+            this.gMailToOutlookToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
+            this.gMailToOutlookToolStripMenuItem.Text = "GMail to Outlook";
             // 
             // MainForm
             // 
@@ -141,7 +148,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.ClientSize = new System.Drawing.Size(330, 312);
-            this.Controls.Add(this.txtLog);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -170,7 +176,8 @@
         private System.Windows.Forms.ToolStripMenuItem tsAbort;
         private System.Windows.Forms.ToolStripSeparator tsSep;
         private System.Windows.Forms.ToolStripMenuItem tsStart;
-        private System.Windows.Forms.RichTextBox txtLog;
+        private System.Windows.Forms.ToolStripMenuItem outlookToGmailToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gMailToOutlookToolStripMenuItem;
     }
 }
 

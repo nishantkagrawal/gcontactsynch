@@ -1,0 +1,5 @@
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\PropertyFileLib\bin\Debug\PropertyFileLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\PropertyFileLib\bin\Debug\PropertyFileLib.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\PropertyFileLib\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\PropertyFileLib\obj\Debug\PropertyFileLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\PropertyFileLib\obj\Debug\PropertyFileLib.pdb

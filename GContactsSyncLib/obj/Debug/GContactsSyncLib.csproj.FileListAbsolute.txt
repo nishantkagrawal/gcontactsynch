@@ -10,3 +10,7 @@ C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyn
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\obj\Debug\GContactsSyncLib.csproj.GenerateResource.Cache
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\obj\Debug\GContactsSyncLib.dll
 C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\obj\Debug\GContactsSyncLib.pdb
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\bin\Debug\NLog.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\bin\Debug\NLog.xml
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\bin\Debug\PropertyFileLib.dll
+C:\Users\daniel\Documents\Visual Studio 2008\Projects\GContactsSync\GContactsSyncLib\bin\Debug\PropertyFileLib.pdb
