@@ -13,6 +13,21 @@ namespace GContactsSyncLib
         static string OutlookMutexFile = Config.LocalUserPath() + "\\BlockedOutlookContacts.dat";
         static string GoogleMutexFile = Config.LocalUserPath() + "\\BlockedGoogleContacts.dat";
 
+        public static void StartingFullSync()
+        {
+            File.Create(Config.LocalUserPath()+"\\FULLSYNC").Close();
+        }
+
+        public static void EndingFullSync()
+        {
+            File.Delete(Config.LocalUserPath() + "\\FULLSYNC");
+        }
+
+        public static bool InFullSync()
+        {
+            return File.Exists(Config.LocalUserPath() + "\\FULLSYNC");
+        }
+
         public static bool IsBlocked(ContactItem item)
         {
             if (!File.Exists(OutlookMutexFile))
@@ -77,7 +92,7 @@ namespace GContactsSyncLib
             {
                 try
                 {
-                    StreamWriter sw = new StreamWriter(OutlookMutexFile);
+                    StreamWriter sw = new StreamWriter(OutlookMutexFile,true);
                     try
                     {
                         sw.WriteLine(c.Title + "," + string.Join(",", c.Emails.Select(e => e.Address).ToArray()));
@@ -88,7 +103,7 @@ namespace GContactsSyncLib
                     }
                     added = true;
                 }
-                catch (IOException)
+                catch (System.Exception)
                 {
                     System.Threading.Thread.Sleep(500);
                     retries++;
@@ -115,7 +130,7 @@ namespace GContactsSyncLib
                     }
                     added = true;
                 }
-                catch (IOException)
+                catch (System.Exception)
                 {
                     System.Threading.Thread.Sleep(500);
                     retries++;
@@ -185,7 +200,7 @@ namespace GContactsSyncLib
                         }
                         saved = true;
                     }
-                    catch (IOException)
+                    catch (System.Exception)
                     {
                         System.Threading.Thread.Sleep(500);
                         retries++;
@@ -253,7 +268,7 @@ namespace GContactsSyncLib
                         }
                         saved = true;
                     }
-                    catch (IOException)
+                    catch (System.Exception)
                     {
                         System.Threading.Thread.Sleep(500);
                         retries++;

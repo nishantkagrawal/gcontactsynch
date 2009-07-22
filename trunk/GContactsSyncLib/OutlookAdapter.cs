@@ -17,7 +17,11 @@ namespace GContactsSync
         private List<ContactItem> _Contacts = new List<ContactItem>();
         NameSpace nspace;
         MAPIFolder contactsFolder;
-            
+
+        public static string ContactItemDisplay(ContactItem item)
+        {
+            return item.FullName == null ? item.Email1Address : item.FullName;
+        }
 
         public string CreateContactFromGoogle (Contact gContact)
         {
@@ -28,6 +32,7 @@ namespace GContactsSync
 
         public void UpdateContactFromGoogle (Contact gContact, ContactItem oContact)
         {
+            
             if (oContact == null)
             {
                 var qryC = Contacts.Where(c => c.FullName == gContact.Title ||

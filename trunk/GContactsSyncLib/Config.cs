@@ -33,7 +33,7 @@ namespace GContactsSyncLib
             target.FileName = LocalUserPath() + "/logs/"+FileName+".log";
             target.ArchiveFileName = LocalUserPath() + "/logs/archives/"+FileName+".{#####}.log";
             target.ArchiveNumbering = FileTarget.ArchiveNumberingMode.Sequence;
-            target.ArchiveAboveSize = 10240;
+            target.ArchiveAboveSize = 10240000;
             target.ConcurrentWrites = true;
             target.KeepFileOpen = false;
             target.Encoding = "iso-8859-2";

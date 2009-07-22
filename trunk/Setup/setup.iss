@@ -70,6 +70,8 @@ Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.pdb; DestDir: {app}
 Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncAddin.tlb; DestDir: {app}
 Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncLib.dll; DestDir: {app}
 Source: ..\GContactsSyncAddin\bin\Release\GContactsSyncLib.pdb; DestDir: {app}
+Source: ..\PropertyFileLib\bin\Release\PropertyFileLib.dll; DestDir: {app}
+
 
 [Icons]
 Name: {group}\{#MyAppName}; Filename: {app}\{#MyAppExeName}

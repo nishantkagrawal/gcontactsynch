@@ -42,9 +42,9 @@ namespace GContactsSync
             this.logger = logger;
         }
 
-        public string ContactDisplay(Contact c)
+        public static string ContactDisplay(Contact c)
         {
-            return c.ToString();
+            return c.Title != "" ? c.Title : c.Emails[0].Address;
         }
 
         public List<Contact> ContactsChangedSince(DateTime d)
@@ -121,9 +121,7 @@ namespace GContactsSync
             ud.BeginInvoke(oContact, gContact, null, null);
         }
 
-        [DllImport("User32.dll")]
-        public static extern int MessageBox(int h, string m, string c, int type);
-
+      
         public void UpdateContactFromOutlook(ContactItem oContact, Contact gContact)
         {
             try
@@ -139,8 +137,10 @@ namespace GContactsSync
                         gContact = gContactsQuery.First();
                         LogInfo("Contact found: " + gContact.Title);
                     }
-                    else
-                        throw new System.Exception("Contact not found by FullName: " + oContact.FullName);
+                    {
+                        CreateContactFromOutlook(oContact);
+                        return;
+                    }
                 }
                 ContactsRequest cr = new ContactsRequest(rs);
                 UpdateContactDataFromOutlook(oContact, gContact);
